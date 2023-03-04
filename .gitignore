@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+surfing-log/
+db/data/
+db/initdb.d/
+portainer/
+
+.vscode/
