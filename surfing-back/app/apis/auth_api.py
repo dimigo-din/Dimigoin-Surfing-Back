@@ -79,5 +79,18 @@ def logout(
         return JSONResponse(status_code=404, content=auth_schema.UserNotFound(error="User Not Found").to_json_str())
     return base_schema.GeneralSuccessResponse(message="Logout Success")
 
+@router.get("/me", responses={
+    200: {"model": auth_schema.UserInfoResponse},
+    403: {"model": base_schema.JWTBearerError}
+    })
+def get_my_info(
+    user_info: jwt.UserInfo = Depends(jwt.JWTBearer()),
+):
+    real_name = dimi_api.get_realname(user_info.user_id)
+    if real_name == None:
+        return JSONResponse(status_code=500, content=base_schema.GeneralErrorResponse(error="Error Occured While Loading Name").to_json_str())
+    return auth_schema.UserInfoResponse(real_name=real_name)
+    
+
     
     

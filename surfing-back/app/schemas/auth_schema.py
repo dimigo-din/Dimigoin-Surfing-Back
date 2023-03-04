@@ -21,3 +21,6 @@ class AccessTokenResponse(BaseSchema):
 
 class UserNotFound(BaseSchema):
     error: str = Field(title="Error", description="Error Message")
+
+class UserInfoResponse(BaseSchema):
+    real_name: str = Field(title="Real Name", description="Real Name")
