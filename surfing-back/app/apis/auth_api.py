@@ -89,7 +89,7 @@ def get_my_info(
     real_name = dimi_api.get_realname(user_info.user_id)
     if real_name == None:
         return JSONResponse(status_code=500, content=base_schema.GeneralErrorResponse(error="Error Occured While Loading Name").to_json_str())
-    return auth_schema.UserInfoResponse(real_name=real_name)
+    return auth_schema.UserInfoResponse(real_name=real_name, role=user_info.role)
     
 
     

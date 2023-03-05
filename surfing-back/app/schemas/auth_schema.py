@@ -24,3 +24,4 @@ class UserNotFound(BaseSchema):
 
 class UserInfoResponse(BaseSchema):
     real_name: str = Field(title="Real Name", description="Real Name")
+    role: str = Field(title="Role", description="Role")
