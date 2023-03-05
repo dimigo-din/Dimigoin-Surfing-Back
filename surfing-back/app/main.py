@@ -13,7 +13,9 @@ app.add_middleware(AccessLoggingMiddleware)
 
 
 origins = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://surfing.2w.vc",
+    "https://surfing.preview.one"
 ]
 
 app.add_middleware(
