@@ -22,17 +22,20 @@ def get_all_circle_submit(db: Session, circle_id: int) -> List[AdminSubmitRespon
     submit_list = db.query(Submit).filter(Submit.circle_id == circle_id).all()
     result: List[AdminSubmitResponse] = []
     for submit in submit_list:
-        if submit.status == "FIRST" or submit.status == "SECOND" or submit.status == "FINALCHOICE":
-            user: auth_crud.UserInterface | None = auth_crud.get_user_by_id(db, submit.user_id) # type: ignore
-            if user is None:
-                raise Exception("User is not found")
-            user_email = user.user_email
-        else: 
-            user_email = ""
+        user: auth_crud.UserInterface | None = auth_crud.get_user_by_id(db, submit.user_id) # type: ignore
+        if user is None:
+            raise Exception("User is not found")
+        user_email = user.user_email
+        user_grade: int = user.user_grade
+        user_class: int = user.user_class
+        user_realname: str = user.user_realname
         result.append(
             AdminSubmitResponse(
                 submit_id=submit.submit_id, # type: ignore
                 submitter_email=user_email, 
+                submitter_grade=user_grade,
+                submitter_class=user_class,
+                submitter_realname=user_realname,
                 question1=submit.question1, # type: ignore
                 question2=submit.question2, # type: ignore
                 question3=submit.question3, # type: ignore

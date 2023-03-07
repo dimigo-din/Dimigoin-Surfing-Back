@@ -34,7 +34,10 @@ def login(
     user_email = login_result.email
     user: UserInterface | None = auth_crud.get_user_by_id(db, user_id)
     if user is None:
-        auth_crud.create_user(db, user_id, user_email)
+        user_detail_info = dimi_api.get_user_info(user_id)
+        if user_detail_info == None:
+            return JSONResponse(status_code=400, content=base_schema.GeneralErrorResponse(error="DimiAPI Error").to_json_str())
+        auth_crud.create_user(db, user_id, user_email, user_detail_info.user_realname, user_detail_info.user_grade, user_detail_info.user_class)
         user_role = "STUDENT"
     else:
         user_role = user.role
@@ -85,11 +88,12 @@ def logout(
     })
 def get_my_info(
     user_info: jwt.UserInfo = Depends(jwt.JWTBearer()),
+    db: Session = Depends(get_db),
 ):
-    real_name = dimi_api.get_realname(user_info.user_id)
-    if real_name == None:
-        return JSONResponse(status_code=500, content=base_schema.GeneralErrorResponse(error="Error Occured While Loading Name").to_json_str())
-    return auth_schema.UserInfoResponse(real_name=real_name, role=user_info.role)
+    user: UserInterface | None = auth_crud.get_user_by_id(db, user_info.user_id)
+    if user == None:
+        return JSONResponse(status_code=403, content=base_schema.GeneralErrorResponse(error="User Not Found").to_json_str())
+    return auth_schema.UserInfoResponse(real_name=user.user_realname, role=user_info.role, email=user.user_email, user_grade=user.user_grade, user_class=user.user_class)
     
 
     

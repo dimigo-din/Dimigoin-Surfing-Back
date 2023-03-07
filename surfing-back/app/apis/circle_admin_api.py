@@ -32,7 +32,7 @@ def get_all_circle_submit(
         return JSONResponse(status_code=401, content=circle_admin_schema.NoPermissionError(error="No permission").to_json_str())
     circle_id = circle_admin_crud.get_user_circle_id(db, user_info.user_id)
     submit_list: List[circle_admin_schema.AdminSubmitResponse] = circle_admin_crud.get_all_circle_submit(db, circle_id)
-    return circle_admin_schema.AdminSubmitListResponse(submit_list=submit_list)
+    return circle_admin_schema.AdminSubmitListResponse(submit_list=submit_list, circle_id=circle_id)
 
 @router.get("/firstconfirm", responses={
     200: {"model": circle_admin_schema.FirstConfirmResponse},

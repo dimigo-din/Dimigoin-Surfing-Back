@@ -14,8 +14,9 @@ class DimiAPIUserInfo:
 
 @dataclass
 class UserDetailInfo: 
-    name: str
-    student_no: str
+    user_realname: str
+    user_grade: int
+    user_class: int
 
 def login(username: str, password: str) -> DimiAPIUserInfo | str:
     res: requests.Response = requests.get(setting.DIMIAPI_URL + "/v1/users/identify", params={"username": username, "password": password}, auth=(setting.DIMIAPI_ID, setting.DIMIAPI_PW))
@@ -33,5 +34,11 @@ def get_realname(user_id: int) -> str | None:
     if res.status_code != 200:
         return None
     res_dict: dict = res.json()
-    print(res_dict)
     return res_dict[0]["name"]
+
+def get_user_info(user_id: int) -> UserDetailInfo | None:
+    res: requests.Response = requests.get(setting.DIMIAPI_URL + "/v1/user-students/search", params={"user_id": user_id},  auth=(setting.DIMIAPI_ID, setting.DIMIAPI_PW))
+    if res.status_code != 200:
+        return None
+    res_dict: dict = res.json()
+    return UserDetailInfo(user_realname=res_dict[0]["name"], user_grade=res_dict[0]["grade"], user_class=res_dict[0]["class"])

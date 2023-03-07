@@ -17,8 +17,8 @@ class UserInfo:
 def get_user_by_id(db: Session, user_id: int) -> UserInterface | None:
     return db.query(User).get(user_id)
 
-def create_user(db: Session, user_id: int, user_email: str) -> None:
-    new_user = User(user_id=user_id, role="STUDENT", user_email=user_email)
+def create_user(db: Session, user_id: int, user_email: str, user_realname: str, user_grade: int, user_class: int) -> None:
+    new_user = User(user_id=user_id, role="STUDENT", user_email=user_email, user_realname=user_realname, user_grade=user_grade, user_class=user_class)
     db.add(new_user)
     db.commit()
     return
