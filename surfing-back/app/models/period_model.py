@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from app.database import Base
 
 class Period(Base):
-    __tablename__ = "Period"
+    __tablename__ = "period"
     period = Column(String(20), primary_key=True)
 
 class PeriodInterface(BaseModel):
