@@ -28,6 +28,14 @@ def get_my_all_submit(
     db: Session = Depends(get_db),
 ):
     submit_list: List[submit_schema.SubmitResponse] = submit_crud.get_user_all_submit(db, user_info.user_id)
+    current_period = period_crud.get_period(db)
+    if current_period == "FIRSTEVAL":
+        for submit in submit_list:
+            submit.status = "SUBMITTED"
+    elif current_period == "SECONDEVAL":
+        for submit in submit_list:
+            if submit.status != "REJECTED":
+                submit.status = "FIRST"
     return submit_schema.SubmitListResponse(submit_list=submit_list)
 
 
