@@ -52,7 +52,7 @@ def confirm_first_submit(
         return JSONResponse(status_code=406, content=base_schema.NotPeriodError(error="Not first evaluation period").to_json_str())
     circle_id = circle_admin_crud.get_user_circle_id(db, user_info.user_id)
     submit_object = circle_admin_crud.get_submit_by_id(db, submit_id)
-    if submit_object == None or submit_object.status != "SUBMITTED":
+    if submit_object == None or submit_object.status != "SUBMITTED" and submit_object.status != "REJECTED":
         return JSONResponse(status_code=402, content=circle_admin_schema.SubmitNotFoundError(error="Submit not found").to_json_str())
     if circle_id != submit_object.circle_id:
         return JSONResponse(status_code=401, content=circle_admin_schema.NoPermissionError(error="No permission").to_json_str())
@@ -80,7 +80,7 @@ def reject_first_submit(
     
     circle_id = circle_admin_crud.get_user_circle_id(db, user_info.user_id)
     submit_object = circle_admin_crud.get_submit_by_id(db, submit_id)
-    if submit_object == None or submit_object.status != "SUBMITTED":
+    if submit_object == None or submit_object.status != "SUBMITTED" and submit_object.status != "FIRST":
         return JSONResponse(status_code=402, content=circle_admin_schema.SubmitNotFoundError(error="Submit not found").to_json_str())
     if circle_id != submit_object.circle_id:
         return JSONResponse(status_code=401, content=circle_admin_schema.NoPermissionError(error="No permission").to_json_str())
@@ -107,7 +107,7 @@ def confirm_second_submit(
     
     circle_id = circle_admin_crud.get_user_circle_id(db, user_info.user_id)
     submit_object = circle_admin_crud.get_submit_by_id(db, submit_id)
-    if submit_object == None or submit_object.status != "FIRST":
+    if submit_object == None or submit_object.status != "FIRST" and submit_object.status != "SECONDREJECTED":
         return JSONResponse(status_code=402, content=circle_admin_schema.SubmitNotFoundError(error="Submit not found").to_json_str())
     if circle_id != submit_object.circle_id:
         return JSONResponse(status_code=401, content=circle_admin_schema.NoPermissionError(error="No permission").to_json_str())
@@ -135,7 +135,7 @@ def reject_second_submit(
     
     circle_id = circle_admin_crud.get_user_circle_id(db, user_info.user_id)
     submit_object = circle_admin_crud.get_submit_by_id(db, submit_id)
-    if submit_object == None or submit_object.status != "FIRST":
+    if submit_object == None or submit_object.status != "FIRST" and submit_object.status != "SECOND":
         return JSONResponse(status_code=402, content=circle_admin_schema.SubmitNotFoundError(error="Submit not found").to_json_str())
     if circle_id != submit_object.circle_id:
         return JSONResponse(status_code=401, content=circle_admin_schema.NoPermissionError(error="No permission").to_json_str())
