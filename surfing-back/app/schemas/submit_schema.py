@@ -38,3 +38,6 @@ class SubmitResponse(BaseSchema):
     status: str = Field(title="Status", description="Status")
 class SubmitListResponse(BaseSchema):
     submit_list: List[SubmitResponse] = Field(title="Submit List", description="Submit List")
+
+class StudentNoNotSetError(BaseSchema):
+    error: str = Field(title="Error", description="Error Message")

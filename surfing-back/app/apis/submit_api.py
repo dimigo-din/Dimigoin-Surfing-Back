@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.schemas import base_schema, submit_schema
 from app.utils import jwt
-from app.cruds import submit_crud, period_crud
+from app.cruds import submit_crud, period_crud, auth_crud
 from app.models.user_model import UserInterface
 from app.models.submit_model import SubmitInterface
 from app.database import get_db
@@ -47,7 +47,8 @@ def get_my_all_submit(
     402: {"model": submit_schema.CircleNotFoundError},
     403: {"model": base_schema.JWTBearerError},
     405: {"model": submit_schema.MultipleSubmitError},
-    406: {"model": base_schema.NotPeriodError}
+    406: {"model": base_schema.NotPeriodError},
+    407: {"model": submit_schema.StudentNoNotSetError},
 
 })
 def submit(
@@ -55,7 +56,12 @@ def submit(
     user_info: jwt.UserInfo = Depends(jwt.JWTBearer()),
     db: Session = Depends(get_db),
 ):
-    if user_info.role != "STUDENT":
+    user: UserInterface | None = auth_crud.get_user_by_id(db, user_info.user_id)
+    if user is None:
+        return JSONResponse(status_code=403, content=base_schema.JWTBearerError(detail="User Not Found").to_json_str())
+    if user.user_student_no == 0:
+        return JSONResponse(status_code=403, content=submit_schema.StudentNoNotSetError(error="Student no was not set").to_json_str())
+    if user.role != "STUDENT":
         return JSONResponse(status_code=401, content=submit_schema.OwnerCannotSubmitError(error="Owner cannot submit").to_json_str())
     if period_crud.get_period(db) != "SUBMITTING":
         return JSONResponse(status_code=406, content=base_schema.NotPeriodError(error="Not submit period").to_json_str())

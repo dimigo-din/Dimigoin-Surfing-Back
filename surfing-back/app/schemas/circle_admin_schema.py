@@ -11,6 +11,7 @@ class AdminSubmitResponse(BaseSchema):
     submit_id: int = Field(title="Submit ID", description="Submit ID")
     submitter_grade: int = Field(title="Submitter Grade", description="Submitter Grade")
     submitter_class: int = Field(title="Submitter Class", description="Submitter Class")
+    submitter_student_no: int = Field(title="Submitter Student No", description="Submitter Student No")
     submitter_realname: str = Field(title="Submitter Real Name", description="Submitter Real Name")
     submitter_email: str = Field(title="Submitter Email", description="Submitter Email")
     question1: str = Field(title="Question 1", description="Question 1")

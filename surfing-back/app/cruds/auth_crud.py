@@ -50,7 +50,7 @@ def get_user_info_by_refresh_token(db: Session, refresh_token: str) -> UserInfo 
 
 def set_user_student_no(db: Session, user: UserInterface, student_no: int) -> bool:
     same_user_no_list: List[User]= db.query(User).filter(User.user_student_no == student_no).all()
-    if len(same_user_no_list) == 0:
+    if len(same_user_no_list) != 0:
         return False
     user.user_student_no = student_no
     db.commit()

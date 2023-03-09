@@ -108,6 +108,8 @@ def set_student_no(
     if user == None:
         return JSONResponse(status_code=403, content=base_schema.GeneralErrorResponse(error="User Not Found").to_json_str())
     result: bool = auth_crud.set_user_student_no(db, user, user_no_data.user_student_no)
+    if result == False:
+        return JSONResponse(status_code=400, content=base_schema.GeneralErrorResponse(error="Set Student No Error").to_json_str())
     return base_schema.GeneralSuccessResponse(message="Set User Student No Success")
 
     

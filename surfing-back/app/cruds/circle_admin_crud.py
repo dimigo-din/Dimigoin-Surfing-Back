@@ -35,6 +35,7 @@ def get_all_circle_submit(db: Session, circle_id: int) -> List[AdminSubmitRespon
                 submitter_email=user_email, 
                 submitter_grade=user_grade,
                 submitter_class=user_class,
+                submitter_student_no=user.user_student_no,
                 submitter_realname=user_realname,
                 question1=submit.question1, # type: ignore
                 question2=submit.question2, # type: ignore
