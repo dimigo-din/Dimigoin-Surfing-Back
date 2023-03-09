@@ -11,6 +11,7 @@ class User(Base):
     user_realname = Column(String(20), nullable=False)
     user_grade = Column(Integer, nullable=False)
     user_class = Column(Integer, nullable=False)
+    user_student_no = Column(Integer)
 
 class UserInterface(BaseModel):
     user_id: int
@@ -19,6 +20,7 @@ class UserInterface(BaseModel):
     user_realname: str
     user_grade: int
     user_class: int
+    user_student_no: int
 
 
     

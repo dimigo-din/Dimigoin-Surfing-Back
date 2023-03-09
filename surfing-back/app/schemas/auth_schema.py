@@ -27,4 +27,8 @@ class UserInfoResponse(BaseSchema):
     email: str = Field(title="Email", description="Email")
     user_grade: int = Field(title="Grade", description="Grade")
     user_class: int = Field(title="Class", description="Class")
+    user_student_no: int = Field(title="Student No", description="Student No")
     role: str = Field(title="Role", description="Role")
+
+class SetUserNoRequest(BaseSchema):
+    user_student_no: int = Field(title="Student No", description="Student No", ge=1, le=32)

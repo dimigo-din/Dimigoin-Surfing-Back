@@ -1,5 +1,6 @@
 # surfing-back/app/cruds/auth_crud.py
 
+from typing import List
 from dataclasses import dataclass
 
 import uuid
@@ -18,7 +19,7 @@ def get_user_by_id(db: Session, user_id: int) -> UserInterface | None:
     return db.query(User).get(user_id)
 
 def create_user(db: Session, user_id: int, user_email: str, user_realname: str, user_grade: int, user_class: int) -> None:
-    new_user = User(user_id=user_id, role="STUDENT", user_email=user_email, user_realname=user_realname, user_grade=user_grade, user_class=user_class)
+    new_user = User(user_id=user_id, role="STUDENT", user_email=user_email, user_realname=user_realname, user_grade=user_grade, user_class=user_class, user_student_no=0)
     db.add(new_user)
     db.commit()
     return
@@ -46,3 +47,11 @@ def get_user_info_by_refresh_token(db: Session, refresh_token: str) -> UserInfo 
     if user is None:
         return None
     return UserInfo(user_id=user.user_id, role=user.role)
+
+def set_user_student_no(db: Session, user: UserInterface, student_no: int) -> bool:
+    same_user_no_list: List[User]= db.query(User).filter(User.user_student_no == student_no).all()
+    if len(same_user_no_list) == 0:
+        return False
+    user.user_student_no = student_no
+    db.commit()
+    return True
