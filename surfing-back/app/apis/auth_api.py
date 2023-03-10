@@ -27,6 +27,7 @@ def login(
     user_login_data: auth_schema.LoginRequest,
     db: Session = Depends(get_db),
 ):
+    
     login_result = dimi_api.login(user_login_data.username, user_login_data.password)
     if isinstance(login_result, str):
         return JSONResponse(status_code=400, content=base_schema.GeneralErrorResponse(error=login_result).to_json_str())
@@ -93,26 +94,24 @@ def get_my_info(
     user: UserInterface | None = auth_crud.get_user_by_id(db, user_info.user_id)
     if user == None:
         return JSONResponse(status_code=403, content=base_schema.GeneralErrorResponse(error="User Not Found").to_json_str())
-    return auth_schema.UserInfoResponse(real_name=user.user_realname, role=user_info.role, email=user.user_email, user_grade=user.user_grade, user_class=user.user_class, user_student_no=user.user_student_no)
+    return auth_schema.UserInfoResponse(user_id=user.user_id, real_name=user.user_realname, role=user_info.role, email=user.user_email, user_grade=user.user_grade, user_class=user.user_class, user_student_no=user.user_student_no)
 
-@router.post("/student_no", responses={
+@router.post("/student_info", responses={
     200: {"model": base_schema.GeneralSuccessResponse},
     400: {"model": base_schema.GeneralErrorResponse},
 })
-def set_student_no(
-    user_no_data: auth_schema.SetUserNoRequest,
+def set_student_info(
+    user_info_data: auth_schema.SetUserInfoRequest,
     user_info: jwt.UserInfo = Depends(jwt.JWTBearer()),
     db: Session = Depends(get_db),
 ):
     user: UserInterface | None = auth_crud.get_user_by_id(db, user_info.user_id)
     if user == None:
         return JSONResponse(status_code=403, content=base_schema.GeneralErrorResponse(error="User Not Found").to_json_str())
-    result: bool = auth_crud.set_user_student_no(db, user, user_no_data.user_student_no)
+    for letter in range(0, len(user.user_realname)):
+        if user.user_realname[letter] != user_info_data.user_realname[letter] and user.user_realname[letter] != "*":
+            return JSONResponse(status_code=400, content=base_schema.GeneralErrorResponse(error="Realname Not Match").to_json_str())
+    result: bool = auth_crud.set_user_student_info(db, user, user_info_data.user_student_no, user_info_data.user_realname)
     if result == False:
-        return JSONResponse(status_code=400, content=base_schema.GeneralErrorResponse(error="Set Student No Error").to_json_str())
-    return base_schema.GeneralSuccessResponse(message="Set User Student No Success")
-
-    
-
-    
-    
+        return JSONResponse(status_code=400, content=base_schema.GeneralErrorResponse(error="Set Student Info Error").to_json_str())
+    return base_schema.GeneralSuccessResponse(message="Set User Student Info Success")

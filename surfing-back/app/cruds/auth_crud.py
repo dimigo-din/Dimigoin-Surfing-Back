@@ -48,10 +48,11 @@ def get_user_info_by_refresh_token(db: Session, refresh_token: str) -> UserInfo 
         return None
     return UserInfo(user_id=user.user_id, role=user.role)
 
-def set_user_student_no(db: Session, user: UserInterface, student_no: int) -> bool:
-    same_user_no_list: List[User]= db.query(User).filter(User.user_student_no == student_no).all()
+def set_user_student_info(db: Session, user: UserInterface, student_no: int, student_realname: str) -> bool:
+    same_user_no_list: List[User]= db.query(User).filter(User.user_grade == user.user_grade, User.user_class == user.user_class, User.user_student_no == student_no).all()
     if len(same_user_no_list) != 0:
         return False
     user.user_student_no = student_no
+    user.user_realname = student_realname
     db.commit()
     return True

@@ -23,6 +23,7 @@ class UserNotFound(BaseSchema):
     error: str = Field(title="Error", description="Error Message")
 
 class UserInfoResponse(BaseSchema):
+    user_id: int = Field(title="ID", description="ID")
     real_name: str = Field(title="Real Name", description="Real Name")
     email: str = Field(title="Email", description="Email")
     user_grade: int = Field(title="Grade", description="Grade")
@@ -30,5 +31,6 @@ class UserInfoResponse(BaseSchema):
     user_student_no: int = Field(title="Student No", description="Student No")
     role: str = Field(title="Role", description="Role")
 
-class SetUserNoRequest(BaseSchema):
-    user_student_no: int = Field(title="Student No", description="Student No", ge=1, le=32)
+class SetUserInfoRequest(BaseSchema):
+    user_student_no: int = Field(title="Student No", description="Student No", ge=1, le=33)
+    user_realname: str = Field(title="Real Name", description="Real Name", min_length=2, max_length=5)
