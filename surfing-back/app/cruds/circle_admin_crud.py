@@ -71,3 +71,6 @@ def second_reject_submit(db: Session, submit: SubmitInterface) -> None:
     submit.status = "SECONDREJECTED"
     db.commit()
     return
+
+def get_circle_by_id(db: Session, circle_id: int) -> CircleInterface | None:
+    return db.query(Circle).get(circle_id)

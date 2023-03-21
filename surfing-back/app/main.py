@@ -14,7 +14,7 @@ app.add_middleware(AccessLoggingMiddleware)
 
 origins = [
     "https://surfing.dimigo.in"
-    "https://surfing.preview.one"
+    "https://surfing.2w.vc"
 ]
 
 app.add_middleware(
@@ -27,12 +27,13 @@ app.add_middleware(
 
 
 def create_all_table():
-    from app.models import user_model, refresh_token_model, submit_model, circle_model, period_model
+    from app.models import user_model, refresh_token_model, submit_model, circle_model, period_model, circle_admin_model
     user_model.Base.metadata.create_all(bind=engine)
     refresh_token_model.Base.metadata.create_all(bind=engine)
     submit_model.Base.metadata.create_all(bind=engine)
     circle_model.Base.metadata.create_all(bind=engine)
     period_model.Base.metadata.create_all(bind=engine)
+    circle_admin_model.Base.metadata.create_all(bind=engine)
 
 create_all_table()
 

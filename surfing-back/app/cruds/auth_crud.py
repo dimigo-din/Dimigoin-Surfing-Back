@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.models.user_model import User, UserInterface
 from app.models.refresh_token_model import RefreshToken, RefreshTokenInterface
+from app.models.circle_admin_model import CircleAdmin, CircleAdminInterface
 
 @dataclass
 class UserInfo:
@@ -18,8 +19,8 @@ class UserInfo:
 def get_user_by_id(db: Session, user_id: int) -> UserInterface | None:
     return db.query(User).get(user_id)
 
-def create_user(db: Session, user_id: int, user_email: str, user_realname: str, user_grade: int, user_class: int) -> None:
-    new_user = User(user_id=user_id, role="STUDENT", user_email=user_email, user_realname=user_realname, user_grade=user_grade, user_class=user_class, user_student_no=0)
+def create_user(db: Session, user_id: int, user_role: str, user_email: str, user_realname: str, user_grade: int, user_class: int) -> None:
+    new_user = User(user_id=user_id, role=user_role, user_email=user_email, user_realname=user_realname, user_grade=user_grade, user_class=user_class, user_student_no=0)
     db.add(new_user)
     db.commit()
     return
@@ -56,3 +57,12 @@ def set_user_student_info(db: Session, user: UserInterface, student_no: int, stu
     user.user_realname = student_realname
     db.commit()
     return True
+
+def check_user_is_circle_admin(db: Session, user_username: str) -> CircleAdminInterface | None:
+    circle_admin: CircleAdminInterface | None = db.query(CircleAdmin).get(user_username)
+    if circle_admin is None:
+        return None
+    circle_admin.complete = True
+    db.commit()
+    db.refresh(circle_admin)
+    return circle_admin

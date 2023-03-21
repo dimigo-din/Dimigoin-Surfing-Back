@@ -8,9 +8,8 @@ from sqlalchemy.orm import Session
 
 from app.schemas import base_schema, auth_schema
 from app.utils import jwt, dimi_api
-from app.cruds import auth_crud
+from app.cruds import auth_crud, circle_admin_crud
 from app.models.user_model import UserInterface
-from app.models.refresh_token_model import RefreshTokenInterface
 from app.database import get_db
 from app import setting
 
@@ -38,8 +37,22 @@ def login(
         user_detail_info = dimi_api.get_user_info(user_id)
         if user_detail_info == None:
             return JSONResponse(status_code=400, content=base_schema.GeneralErrorResponse(error="DimiAPI Error").to_json_str())
-        auth_crud.create_user(db, user_id, user_email, user_detail_info.user_realname, user_detail_info.user_grade, user_detail_info.user_class)
-        user_role = "STUDENT"
+        circle_data = auth_crud.check_user_is_circle_admin(db, user_login_data.username)
+        if circle_data is not None:
+            circle = circle_admin_crud.get_circle_by_id(db, circle_data.circle_id)
+            if circle is None:
+                return JSONResponse(status_code=400, content=base_schema.GeneralErrorResponse(error="Circle is not found").to_json_str())
+            if circle_data.role == "CIRCLE_ADMIN":
+                circle.owner_id = user_id
+            elif circle_data.role == "CIRCLE_VICE_ADMIN":
+                circle.subowner_id = user_id
+            else:
+                return JSONResponse(status_code=400, content=base_schema.GeneralErrorResponse(error="Circle Admin Role is not valid").to_json_str())
+            user_role = circle_data.role
+            auth_crud.create_user(db, user_id, circle_data.role, user_email, circle_data.user_realname, circle_data.user_grade, circle_data.user_class)
+        else:
+            user_role = "STUDENT"
+            auth_crud.create_user(db, user_id, "STUDENT", user_email, user_detail_info.user_realname, user_detail_info.user_grade, user_detail_info.user_class)
     else:
         user_role = user.role
         
